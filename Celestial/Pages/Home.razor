@@ -1,7 +1,28 @@
 ﻿@page "/"
+@using Celestial.Services
+
+@inject CelestialService Celestial
+@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Celestial</h1>
 
-Welcome to your new app.
+<div id="viewport"></div>
+<div id="conversation">
+    <div id="messages"></div>
+    <input id="fieldMessage" type="text" placeholder="Type a message..." />
+    <button id="send">Send</button>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await Celestial.LoadSettings();
+
+        if (Celestial.Initialize() == false)
+        {
+            Navigation.NavigateTo("/settings");
+        }
+    }
+}

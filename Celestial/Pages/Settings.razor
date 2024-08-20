@@ -1,0 +1,53 @@
+﻿@page "/settings"
+@using Celestial.Models
+@using Celestial.Services
+
+@inject NavigationManager Navigation
+@inject CelestialService Celestial
+
+<PageTitle>Configuration</PageTitle>
+
+<h1>Settings</h1>
+
+<fieldset>
+    <legend>OpenAI</legend>
+    <table>
+        <tr><td><label for="fieldOpenAiUrl">URL:</label></td><td><input id="fieldOpenAiUrl" @bind="OpenAi.Url"/></td></tr>
+        <tr><td><label for="fieldOpenAiKey">Key:</label></td><td><input id="fieldOpenAiKey" @bind="OpenAi.Key" type="password"/></td></tr>
+        <tr><td><label for="fieldOpenAiDeployment">Deployment name:</label></td><td><input id="fieldOpenAiDeployment" @bind="OpenAi.Deployment"/></td></tr>
+    </table>
+</fieldset>
+<p>
+    <button class="btn btn-primary" @onclick="ActionSave">Save</button>
+    <button class="btn btn-primary" @onclick="ActionCancel">Cancel</button>
+</p>
+
+<p>To play Celestial, you will need to provide your own OpenAI Azure configuration. </p>
+
+@code {
+    OpenAiSettings OpenAi { get; set; } = new OpenAiSettings();
+    
+    protected override void OnInitialized()
+    {
+        OpenAi.Url = Celestial.Settings.OpenAi.Url;
+        OpenAi.Key = Celestial.Settings.OpenAi.Key;
+        OpenAi.Deployment = Celestial.Settings.OpenAi.Deployment;
+    }
+    
+    private async Task ActionSave()
+    {
+        Celestial.Settings.OpenAi.Url = OpenAi.Url;
+        Celestial.Settings.OpenAi.Key = OpenAi.Key;
+        Celestial.Settings.OpenAi.Deployment = OpenAi.Deployment;
+        
+        await Celestial.SaveSettings();
+        
+        Navigation.NavigateTo("/");
+    }
+
+    private void ActionCancel()
+    {
+        Navigation.NavigateTo("/");
+    }
+}
+
